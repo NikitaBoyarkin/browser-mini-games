@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Local secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Tooling / logs
+node_modules/
+*.log

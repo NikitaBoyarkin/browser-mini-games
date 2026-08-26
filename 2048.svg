@@ -31,7 +31,7 @@
       var LS_BEST = 'arcade_best_' + GAME;
       var cta = document.getElementById('cta');
       var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(window.location.hostname);
-      var PH_KEY = '__PH_KEY__';
+      var PH_KEY = 'phc_tdju2w288PnkFE2e96efWKpoCvBPHPtveSztZK9NnGrv';
       if (!IS_LOCAL && PH_KEY.indexOf('__PH_') !== 0 && !window.posthog) {
         var phs = document.createElement('script');
         phs.src = 'https://us-assets.i.posthog.com/static/array.js';

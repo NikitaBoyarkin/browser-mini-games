@@ -30,7 +30,7 @@
       var LS_BEST = 'arcade_best_' + GAME;
       var cta = document.getElementById('cta');
       var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(window.location.hostname);
-      var PH_KEY = '__PH_KEY__';
+      var PH_KEY = 'phc_tdju2w288PnkFE2e96efWKpoCvBPHPtveSztZK9NnGrv';
       if (!IS_LOCAL && PH_KEY.indexOf('__PH_') !== 0 && !window.posthog) {
         var phs = document.createElement('script');
         phs.src = 'https://us-assets.i.posthog.com/static/array.js';
@@ -74,7 +74,14 @@
         if (keys['ArrowUp'] || keys['w'] || keys['W']) py -= 6;
         if (keys['ArrowDown'] || keys['s'] || keys['S']) py += 6;
         py = Math.max(0, Math.min(H - 60, py));
-        if (bally > cy + 22) cy += 4; else if (bally < cy + 22) cy -= 4;
+        // CPU: chases only when the ball comes its way, with positioning error.
+        if (vx > 0) {
+          var err = 10 + Math.random() * 40; // ±(10..50) px — sometimes misses
+          var target = bally + (Math.random() < 0.5 ? -err : err);
+          var center = cy + 30;
+          if (center < target - 3) cy += 3.2;
+          else if (center > target + 3) cy -= 3.2;
+        } else if (cy > 110) { cy -= 1.6; } else if (cy < 130) { cy += 1.6; } // ease to center while ball is away
         cy = Math.max(0, Math.min(H - 60, cy));
         ballx += vx; bally += vy;
         if (bally <= 4) { bally = 4; vy = -vy; }
