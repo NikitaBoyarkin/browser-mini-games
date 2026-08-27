@@ -9,3 +9,7 @@
 # Tooling / logs
 node_modules/
 *.log
+
+# Python test artifacts
+__pycache__/
+.pytest_cache/
