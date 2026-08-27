@@ -136,7 +136,11 @@
         update();
       }
 
-      document.addEventListener('click', collect);
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (t && t.closest && t.closest('a')) return;
+        collect();
+      });
       document.addEventListener('keydown', function (e) {
         if (e.key === ' ' || e.key === 'Enter') collect();
       });

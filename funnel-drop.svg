@@ -122,7 +122,10 @@
       ph('game_started', { game: GAME });
       for (var i = 0; i < 3; i++) spawn();
       setInterval(step, 16);
-      setInterval(spawn, Math.max(350, 700 - caught * 4));
+      function scheduleSpawn() {
+        setTimeout(function () { spawn(); scheduleSpawn(); }, Math.max(350, 700 - caught * 4));
+      }
+      scheduleSpawn();
       draw();
     })();
   ]]></script>

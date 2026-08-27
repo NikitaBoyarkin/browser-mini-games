@@ -76,6 +76,7 @@
         if (keys['ArrowUp'] || keys['w'] || keys['W']) py -= 6;
         if (keys['ArrowDown'] || keys['s'] || keys['S']) py += 6;
         py = Math.max(0, Math.min(H - 60, py));
+        if (!running) { draw(); return; }
         // CPU: chases only when the ball comes its way, with positioning error.
         if (vx > 0) {
           var err = 10 + Math.random() * 40; // ±(10..50) px — sometimes misses
