@@ -39,7 +39,7 @@ Goal: bring users back daily and turn engagement into a contact request.
 | **Contact CTA** | games + hub | on new best / daily done / win the game reveals LinkedIn + Telegram links; hub has a contact section |
 | **Analytics** | all files | PostHog client-side events (see below) — no cookies, `IS_LOCAL` guard skips `localhost` |
 
-**Events sent** (via PostHog): `game_started`, `game_over`, `game_win`, `sig_reached`, `milestone`, `daily_completed`, `contact_click`, `game_selected`.
+**Events sent** (via PostHog): `game_started`, `game_over`, `game_win`, `sig_reached`, `milestone`, `best_broken`, `daily_completed`, `contact_click`, `game_selected`.
 
 ## 🔑 PostHog key (required for analytics)
 

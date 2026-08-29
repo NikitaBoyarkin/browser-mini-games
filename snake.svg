@@ -54,6 +54,17 @@
         ph('daily_completed', { game: GAME, streak: streak });
       }
       function showCTA(on) { if (cta) cta.style.display = on ? 'block' : 'none'; }
+      function wireCTA() {
+        if (!cta) return;
+        var links = cta.querySelectorAll('a');
+        for (var i = 0; i < links.length; i++) {
+          links[i].addEventListener('click', function () {
+            var href = this.getAttribute('href') || '';
+            var channel = href.indexOf('linkedin') !== -1 ? 'linkedin' : (href.indexOf('t.me') !== -1 ? 'telegram' : 'other');
+            ph('contact_click', { location: 'game_over', channel: channel, game: GAME });
+          });
+        }
+      }
       // —— /retention ——
 
       function begin() {
@@ -131,7 +142,7 @@
         if (timer) { clearInterval(timer); timer = null; }
         var best = bestOf();
         var newBest = score > best;
-        if (newBest) lsSet(LS_BEST, String(score));
+        if (newBest) { lsSet(LS_BEST, String(score)); ph('best_broken', { game: GAME, old_best: best, new_best: score, score: score }); }
         var isDaily = todayGame() === GAME && score >= DAILY_TARGET;
         if (isDaily) markDaily();
         showCTA(newBest);
@@ -172,6 +183,7 @@
         begin();
       }, {passive: false});
 
+      wireCTA();
       init();
     })();
   ]]></script>

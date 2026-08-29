@@ -60,6 +60,17 @@
         ph('daily_completed', { game: GAME, streak: streak });
       }
       function showCTA(on) { if (cta) cta.style.display = on ? 'block' : 'none'; }
+      function wireCTA() {
+        if (!cta) return;
+        var links = cta.querySelectorAll('a');
+        for (var i = 0; i < links.length; i++) {
+          links[i].addEventListener('click', function () {
+            var href = this.getAttribute('href') || '';
+            var channel = href.indexOf('linkedin') !== -1 ? 'linkedin' : (href.indexOf('t.me') !== -1 ? 'telegram' : 'other');
+            ph('contact_click', { location: 'game_over', channel: channel, game: GAME });
+          });
+        }
+      }
       // —— /retention ——
 
       function spawn() { dots.push({x: 40 + Math.random() * 320, y: 42, s: 1.6 + Math.random() * 1.2}); }
@@ -87,7 +98,7 @@
           d.y += d.s;
           if (d.y + 6 >= 375 && d.y - 6 <= 405 && Math.abs(d.x - px) < 46) {
             caught++; dots.splice(i, 1);
-            if (caught > best) { best = caught; lsSet(LS_BEST, String(best)); newBest = true; }
+            if (caught > best) { var oldBest = best; best = caught; lsSet(LS_BEST, String(best)); newBest = true; ph('best_broken', { game: GAME, old_best: oldBest, new_best: best, score: caught }); }
           }
           else if (d.y > 425) { missed++; dots.splice(i, 1); }
         }
@@ -118,6 +129,7 @@
       document.addEventListener('touchstart', function (e) { e.preventDefault(); touchPaddleX(e.touches[0].clientX); }, {passive: false});
       document.addEventListener('touchmove', function (e) { e.preventDefault(); touchPaddleX(e.touches[0].clientX); }, {passive: false});
 
+      wireCTA();
       best = bestOf();
       ph('game_started', { game: GAME });
       for (var i = 0; i < 3; i++) spawn();
