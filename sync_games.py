@@ -24,6 +24,9 @@ FILES = [
     "pong.svg",
     "2048.svg",
     "funnel-drop.svg",
+    "cohort-catch.svg",
+    "sql-query.svg",
+    "metric-match.svg",
     "index.html",
 ]
 

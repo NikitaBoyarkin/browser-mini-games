@@ -509,6 +509,60 @@
           <span class="play">Play →</span>
         </div>
       </a>
+      <a class="card" href="cohort-catch.svg" aria-label="Play Cohort Catch">
+        <div class="thumb">
+          <img
+            src="cohort-catch.svg"
+            alt="Cohort Catch preview"
+            loading="lazy"
+            width="400"
+            height="440"
+          />
+        </div>
+        <div class="card-body">
+          <h2>📊 Cohort Catch</h2>
+          <span class="best" data-game="cohort"></span>
+          <p class="ctrl">Drag / ←·→</p>
+          <p class="goal">Catch returning users, avoid churned</p>
+          <span class="play">Play →</span>
+        </div>
+      </a>
+      <a class="card" href="sql-query.svg" aria-label="Play SQL Query">
+        <div class="thumb">
+          <img
+            src="sql-query.svg"
+            alt="SQL Query preview"
+            loading="lazy"
+            width="400"
+            height="440"
+          />
+        </div>
+        <div class="card-body">
+          <h2>🧩 SQL Query</h2>
+          <span class="best" data-game="sql"></span>
+          <p class="ctrl">Click / keys 1-4</p>
+          <p class="goal">Fill the SQL blank</p>
+          <span class="play">Play →</span>
+        </div>
+      </a>
+      <a class="card" href="metric-match.svg" aria-label="Play Metric Match">
+        <div class="thumb">
+          <img
+            src="metric-match.svg"
+            alt="Metric Match preview"
+            loading="lazy"
+            width="400"
+            height="440"
+          />
+        </div>
+        <div class="card-body">
+          <h2>🃏 Metric Match</h2>
+          <span class="best" data-game="metric"></span>
+          <p class="ctrl">Click two cards</p>
+          <p class="goal">Match metric to formula</p>
+          <span class="play">Play →</span>
+        </div>
+      </a>
     </main>
     <section class="contact">
       <h2>Want analytics or games like this for your product?</h2>
@@ -706,6 +760,9 @@
           { key: "pong", label: "🏓 Pong", target: "win" },
           { key: "abtest", label: "🧪 A/B Test", target: "sig ≤ 12 taps" },
           { key: "funnel", label: "🔻 Funnel Drop", target: "25 caught" },
+          { key: "cohort", label: "📊 Cohort Catch", target: "25 kept" },
+          { key: "sql", label: "🧩 SQL Query", target: "perfect round (6/6)" },
+          { key: "metric", label: "🃏 Metric Match", target: "solve the board" },
         ];
         function todayGame() {
           return GAMES[Math.floor(Date.now() / 86400000) % GAMES.length];

@@ -26,6 +26,9 @@ GAMES = [
     ("pong", "pong.svg", "score"),
     ("abtest", "ab-test.svg", "status"),
     ("funnel", "funnel-drop.svg", "status"),
+    ("cohort", "cohort-catch.svg", "status"),
+    ("sql", "sql-query.svg", "status"),
+    ("metric", "metric-match.svg", "status"),
 ]
 
 
@@ -125,4 +128,41 @@ def test_funnel_spawns_dots(server_url, browser):
     page.wait_for_timeout(1500)
     dots = page.evaluate("document.querySelectorAll('#dots circle').length")
     assert dots >= 3, f"funnel: expected >=3 dots, got {dots}"
+    page.close()
+
+
+def test_cohort_spawns_dots(server_url, browser):
+    page = browser.new_page()
+    page.goto(f"{server_url}/cohort-catch.svg", wait_until="load")
+    page.wait_for_timeout(1500)
+    dots = page.evaluate("document.querySelectorAll('#dots circle').length")
+    assert dots >= 3, f"cohort: expected >=3 dots, got {dots}"
+    page.close()
+
+
+def test_sql_answers_on_click(server_url, browser):
+    page = browser.new_page()
+    page.goto(f"{server_url}/sql-query.svg", wait_until="load")
+    page.wait_for_timeout(500)
+    box = page.locator("#opts rect").first.bounding_box()
+    assert box, "sql: no option rect found"
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(200)
+    query = page.evaluate("document.getElementById('query').textContent")
+    assert "___" not in query, f"sql: query not filled after click: {query!r}"
+    page.close()
+
+
+def test_metric_flips_cards(server_url, browser):
+    page = browser.new_page()
+    page.goto(f"{server_url}/metric-match.svg", wait_until="load")
+    page.wait_for_timeout(500)
+    cards = page.locator("#board g")
+    assert cards.count() >= 2, "metric: expected >=2 cards"
+    for i in (0, 1):
+        box = cards.nth(i).bounding_box()
+        page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(200)
+    status = page.evaluate("document.getElementById('status').textContent")
+    assert "moves 1" in status, f"metric: two flips did not register a move: {status!r}"
     page.close()

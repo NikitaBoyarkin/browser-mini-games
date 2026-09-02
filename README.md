@@ -11,6 +11,9 @@ Playable browser mini-games — some about analytics, some just for fun. Each ga
 | 🔢 2048 | [`2048.svg`](2048.svg) | Swipe / arrows | Merge tiles to reach 2048 |
 | 🧪 A/B Test | [`ab-test.svg`](ab-test.svg) | Tap / click | Collect data until p < 0.05 |
 | 🔻 Funnel Drop | [`funnel-drop.svg`](funnel-drop.svg) | Drag / ←·→ | Catch falling users to convert |
+| 📊 Cohort Catch | [`cohort-catch.svg`](cohort-catch.svg) | Drag / ←·→ | Catch Returning users, dodge Churned |
+| 🧩 SQL Query | [`sql-query.svg`](sql-query.svg) | Tap / click | Pick the token that completes the SQL |
+| 🃏 Metric Match | [`metric-match.svg`](metric-match.svg) | Tap / click | Match metric pairs in fewest moves |
 
 ## ▶️ How to run
 
