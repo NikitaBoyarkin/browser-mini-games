@@ -23,7 +23,7 @@
 
       // —— retention + contact (shared pattern) ——
       var GAME = 'cohort', DAILY_TARGET = 25;
-      var DAILY_GAMES = ['snake', '2048', 'pong', 'abtest', 'funnel', 'cohort', 'sql', 'metric'];
+      var DAILY_GAMES = ['snake', '2048', 'pong', 'abtest', 'funnel', 'cohort', 'sql', 'metric', 'retention', 'bottleneck'];
       var LS_BEST = 'arcade_best_' + GAME;
       var cta = document.getElementById('cta');
       var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(window.location.hostname);

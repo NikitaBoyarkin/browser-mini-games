@@ -30,6 +30,8 @@ FILES = [
     "cohort-catch.svg",
     "sql-query.svg",
     "metric-match.svg",
+    "retention-day.svg",
+    "funnel-bottleneck.svg",
     "index.html",
 ]
 

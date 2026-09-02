@@ -80,6 +80,24 @@ const GAMES = [
     ctrl: "Click two cards",
     goal: "Match metric to formula",
   },
+  {
+    href: "retention-day.svg",
+    label: "Play Retention Day",
+    title: "Retention Day",
+    emoji: "📅",
+    gameKey: "retention",
+    ctrl: "Click / keys 1-4",
+    goal: "Pick the right retention day",
+  },
+  {
+    href: "funnel-bottleneck.svg",
+    label: "Play Funnel Bottleneck",
+    title: "Funnel Bottleneck",
+    emoji: "🔍",
+    gameKey: "bottleneck",
+    ctrl: "Click / keys 1-4",
+    goal: "Find the biggest funnel drop",
+  },
 ];
 ---
 
@@ -117,6 +135,8 @@ const GAMES = [
         { key: "cohort", label: "📊 Cohort Catch", target: "25 kept" },
         { key: "sql", label: "🧩 SQL Query", target: "perfect round (6/6)" },
         { key: "metric", label: "🃏 Metric Match", target: "solve the board" },
+        { key: "retention", label: "📅 Retention Day", target: "perfect round (6/6)" },
+        { key: "bottleneck", label: "🔍 Funnel Bottleneck", target: "perfect round (6/6)" },
       ];
 
       function lsGet(k, d) {

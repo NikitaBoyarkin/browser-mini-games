@@ -13,14 +13,33 @@
   <script type="text/javascript"><![CDATA[
     (function () {
       var svgns = 'http://www.w3.org/2000/svg';
-      var pairs = [
+      var ALL_PAIRS = [
         ["DAU", "unique users / day"],
         ["MAU", "unique users / month"],
         ["Retention", "Dn / D0"],
         ["Churn", "1 - retention"],
         ["LTV", "ARPU x lifespan"],
-        ["ARPU", "revenue / users"]
+        ["ARPU", "revenue / users"],
+        ["CTR", "clicks / impressions"],
+        ["CPA", "cost / acquisition"],
+        ["Conversion", "conversions / visitors"],
+        ["Bounce rate", "1-page / total"],
+        ["Stickiness", "DAU / MAU"],
+        ["NPS", "% promoters - % detractors"],
+        ["CAC", "cost / new customers"],
+        ["ARPPU", "revenue / paying users"],
+        ["Payback", "CAC / ARPU"],
+        ["MoM growth", "(now - last) / last"],
+        ["Activation", "activated / signed up"],
+        ["Engagement", "engaged / total"],
+        ["Depth", "events / session"]
       ];
+      function pickPairs(n) {
+        var pool = ALL_PAIRS.slice();
+        for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp; }
+        return pool.slice(0, n);
+      }
+      var pairs = pickPairs(6);
       var board = document.getElementById('board');
       var statusT = document.getElementById('status');
       var hint = document.getElementById('hint'), cta = document.getElementById('cta');
@@ -29,7 +48,7 @@
 
       // —— retention + contact (shared pattern) ——
       var GAME = 'metric', DAILY_TARGET = 6;
-      var DAILY_GAMES = ['snake', '2048', 'pong', 'abtest', 'funnel', 'cohort', 'sql', 'metric'];
+      var DAILY_GAMES = ['snake', '2048', 'pong', 'abtest', 'funnel', 'cohort', 'sql', 'metric', 'retention', 'bottleneck'];
       var LS_BEST = 'arcade_best_' + GAME;
       var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(window.location.hostname);
       var PH_KEY = 'phc_tdju2w288PnkFE2e96efWKpoCvBPHPtveSztZK9NnGrv';

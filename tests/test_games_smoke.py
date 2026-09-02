@@ -30,6 +30,8 @@ GAMES = [
     ("cohort", "cohort-catch.svg", "status"),
     ("sql", "sql-query.svg", "status"),
     ("metric", "metric-match.svg", "status"),
+    ("retention", "retention-day.svg", "status"),
+    ("bottleneck", "funnel-bottleneck.svg", "status"),
 ]
 
 
@@ -166,4 +168,30 @@ def test_metric_flips_cards(server_url, browser):
     page.wait_for_timeout(200)
     status = page.evaluate("document.getElementById('status').textContent")
     assert "moves 1" in status, f"metric: two flips did not register a move: {status!r}"
+    page.close()
+
+
+def test_retention_answers_on_click(server_url, browser):
+    page = browser.new_page()
+    page.goto(f"{server_url}/retention-day.svg", wait_until="load")
+    page.wait_for_timeout(500)
+    box = page.locator("#opts rect").first.bounding_box()
+    assert box, "retention: no option rect found"
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(200)
+    status = page.evaluate("document.getElementById('status').textContent")
+    assert "Round 2" in status or "score" in status, f"retention: click did not advance: {status!r}"
+    page.close()
+
+
+def test_bottleneck_answers_on_click(server_url, browser):
+    page = browser.new_page()
+    page.goto(f"{server_url}/funnel-bottleneck.svg", wait_until="load")
+    page.wait_for_timeout(500)
+    box = page.locator("#opts rect").first.bounding_box()
+    assert box, "bottleneck: no option rect found"
+    page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(200)
+    status = page.evaluate("document.getElementById('status').textContent")
+    assert "Round 2" in status or "score" in status, f"bottleneck: click did not advance: {status!r}"
     page.close()

@@ -16,6 +16,8 @@ Self-contained games live in [`public/`](public/) (SVG files are copied as-is, o
 | 📊 Cohort Catch | [`cohort-catch.svg`](public/cohort-catch.svg) | Drag / ←·→ | Catch Returning users, dodge Churned |
 | 🧩 SQL Query | [`sql-query.svg`](public/sql-query.svg) | Tap / click | Pick the token that completes the SQL |
 | 🃏 Metric Match | [`metric-match.svg`](public/metric-match.svg) | Tap / click | Match metric pairs in fewest moves |
+| 📅 Retention Day | [`retention-day.svg`](public/retention-day.svg) | Tap / click | Pick the right retention day |
+| 🔍 Funnel Bottleneck | [`funnel-bottleneck.svg`](public/funnel-bottleneck.svg) | Tap / click | Find the biggest funnel drop |
 
 ## ▶️ How to run
 

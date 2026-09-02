@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 400 440" preserveAspectRatio="xMidYMid meet" style="background:#0a0a12;touch-action:none" font-family="'Fira Code','SF Mono',Menlo,monospace">
   <rect width="400" height="440" fill="#0a0a12"/>
-  <text x="200" y="28" text-anchor="middle" fill="#ff6643" font-size="16" font-weight="bold" letter-spacing="3">SQL QUERY</text>
+  <text x="200" y="28" text-anchor="middle" fill="#ff6643" font-size="16" font-weight="bold" letter-spacing="3">RETENTION DAY</text>
   <text id="status" x="200" y="52" text-anchor="middle" fill="#f4f4f5" font-size="12">Round 1 / 6 · score 0</text>
-  <text id="metric" x="200" y="76" text-anchor="middle" fill="#ffbe99" font-size="11">metric: ...</text>
-  <rect x="20" y="92" width="360" height="58" fill="#12121c" stroke="#2a3240" stroke-width="1.5" rx="6"/>
-  <text id="query" x="30" y="126" fill="#f4f4f5" font-size="11.5">SELECT ___ FROM events</text>
+  <text id="install" x="200" y="90" text-anchor="middle" fill="#8a8aa8" font-size="11">installed: ...</text>
+  <text id="return" x="200" y="112" text-anchor="middle" fill="#ffbe99" font-size="12" font-weight="bold">returned: ...</text>
+  <text id="question" x="200" y="148" text-anchor="middle" fill="#f4f4f5" font-size="12">What retention day is this?</text>
   <g id="opts"></g>
-  <text id="hint" x="200" y="410" text-anchor="middle" fill="#666" font-size="10">click the token that fills the blank · keys 1-4</text>
+  <text id="hint" x="200" y="410" text-anchor="middle" fill="#666" font-size="10">click the retention day · keys 1-4</text>
   <g id="cta" style="display:none">
     <text x="200" y="408" text-anchor="middle" fill="#4ade80" font-size="10">🎉 Perfect round! Want real analytics?</text>
     <a href="https://www.linkedin.com/in/nikita-boyarkin" target="_blank" rel="noopener noreferrer"><text x="154" y="422" text-anchor="middle" fill="#ff6643" font-size="11" font-weight="bold">LinkedIn</text></a>
@@ -16,30 +16,14 @@
   <script type="text/javascript"><![CDATA[
     (function () {
       var svgns = 'http://www.w3.org/2000/svg';
-      var rounds = [
-        {m: "DAU - distinct users in a day", q: "SELECT ___(user_id) FROM events WHERE d='2026-08-31'", o: ["COUNT", "DISTINCT", "SUM", "AVG"], a: 1},
-        {m: "Sign-ups today", q: "SELECT ___(*) FROM users WHERE created_at = today", o: ["COUNT", "DISTINCT", "GROUP BY", "ORDER BY"], a: 0},
-        {m: "Revenue per paying user", q: "SELECT ___(price) / COUNT(user_id) FROM orders", o: ["SUM", "MIN", "DISTINCT", "MAX"], a: 0},
-        {m: "7-day retention rate", q: "SELECT COUNT(d7) ___ COUNT(d0) AS r7 FROM cohort", o: ["/", "*", "+", "-"], a: 0},
-        {m: "MAU - monthly active users", q: "SELECT ___(user_id) FROM events WHERE d BETWEEN m0 AND m1", o: ["COUNT", "DISTINCT", "SUM", "GROUP"], a: 1},
-        {m: "Top 5 users by revenue", q: "SELECT user_id, SUM(price) FROM orders ___ BY user_id ORDER BY 2 DESC", o: ["GROUP", "ORDER", "WHERE", "HAVING"], a: 0},
-        {m: "Average order value", q: "SELECT ___(price) FROM orders", o: ["AVG", "SUM", "COUNT", "MAX"], a: 0},
-        {m: "Users with >1 order", q: "SELECT user_id FROM orders ___ BY user_id HAVING COUNT(*)>1", o: ["GROUP", "ORDER", "WHERE", "JOIN"], a: 0},
-        {m: "Monthly revenue trend", q: "SELECT month, ___(price) FROM orders ___ BY month", o: ["SUM,GROUP", "AVG,ORDER", "COUNT,WHERE", "SUM,ORDER"], a: 0},
-        {m: "Revenue from mobile", q: "SELECT SUM(price) FROM orders ___ platform='mobile'", o: ["WHERE", "GROUP", "ORDER", "HAVING"], a: 0},
-        {m: "Active last 7 days", q: "SELECT COUNT(DISTINCT user_id) FROM events WHERE d >= today ___ 7", o: ["-", "+", "/", "*"], a: 0},
-        {m: "Top country by revenue", q: "SELECT country, SUM(price) FROM orders GROUP BY country ORDER BY 2 ___ LIMIT 1", o: ["DESC", "ASC", "GROUP", "HAVING"], a: 0},
-        {m: "Exclude test accounts", q: "SELECT * FROM users WHERE email ___ '%test%'", o: ["NOT LIKE", "LIKE", "IS", "="], a: 0},
-        {m: "Join orders to users", q: "SELECT * FROM orders ___ users ON orders.user_id = users.id", o: ["JOIN", "GROUP", "WHERE", "ORDER"], a: 0},
-        {m: "Distinct event names", q: "SELECT ___(event) FROM events", o: ["DISTINCT", "COUNT", "SUM", "GROUP"], a: 0}
-      ];
+      var LABELS = ['D0','D1','D3','D7','D30'];
       var idx = 0, score = 0, answered = false, best = 0, dailyFired = false;
-      var metricT = document.getElementById('metric'), queryT = document.getElementById('query'), statusT = document.getElementById('status'), optsG = document.getElementById('opts');
+      var statusT = document.getElementById('status'), installT = document.getElementById('install'), returnT = document.getElementById('return'), optsG = document.getElementById('opts');
       var hint = document.getElementById('hint'), cta = document.getElementById('cta');
-      var btns = [], lbls = [];
+      var btns = [], lbls = [], rounds = [];
 
       // —— retention + contact (shared pattern) ——
-      var GAME = 'sql', DAILY_TARGET = 6;
+      var GAME = 'retention', DAILY_TARGET = 6;
       var DAILY_GAMES = ['snake', '2048', 'pong', 'abtest', 'funnel', 'cohort', 'sql', 'metric', 'retention', 'bottleneck'];
       var LS_BEST = 'arcade_best_' + GAME;
       var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(window.location.hostname);
@@ -81,14 +65,29 @@
       }
       // —— /retention ——
 
+      function addDays(s, n) { var d = new Date(s); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+      function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+      function makeRound() {
+        var day = LABELS[Math.floor(Math.random() * LABELS.length)];
+        var n = parseInt(day.slice(1), 10);
+        var install = new Date(2026, Math.floor(Math.random() * 12), 1 + Math.floor(Math.random() * 28));
+        var installStr = install.toISOString().slice(0, 10);
+        var retStr = addDays(installStr, n);
+        var opts = shuffle(LABELS.slice()).slice(0, 4);
+        if (opts.indexOf(day) === -1) opts[0] = day;
+        opts = shuffle(opts);
+        return { install: installStr, ret: retStr, day: day, opts: opts, a: opts.indexOf(day) };
+      }
+      function buildRounds() { rounds = []; for (var i = 0; i < 6; i++) rounds.push(makeRound()); }
+
       function render() {
         var r = rounds[idx];
-        metricT.textContent = 'metric: ' + r.m;
-        queryT.textContent = r.q; queryT.setAttribute('fill', '#f4f4f5');
+        installT.textContent = 'installed: ' + r.install;
+        returnT.textContent = 'returned:  ' + r.ret;
         statusT.textContent = 'Round ' + (idx + 1) + ' / ' + rounds.length + ' · score ' + score + ' · Best ' + Math.max(bestOf(), best);
         while (optsG.firstChild) optsG.removeChild(optsG.firstChild);
         btns = []; lbls = [];
-        var ys = [178, 216, 254, 292];
+        var ys = [188, 226, 264, 302];
         for (var i = 0; i < 4; i++) {
           var y = ys[i];
           var rect = document.createElementNS(svgns, 'rect');
@@ -96,7 +95,7 @@
           rect.setAttribute('fill', '#12121c'); rect.setAttribute('stroke', '#2a3240'); rect.setAttribute('stroke-width', '1.5'); rect.style.cursor = 'pointer';
           var t = document.createElementNS(svgns, 'text');
           t.setAttribute('x', 60); t.setAttribute('y', y + 20); t.setAttribute('fill', '#f4f4f5'); t.setAttribute('font-size', '12'); t.style.pointerEvents = 'none';
-          t.textContent = (i + 1) + '.  ' + r.o[i];
+          t.textContent = (i + 1) + '.  ' + r.opts[i];
           (function (k) { rect.addEventListener('click', function () { choose(k); }); })(i);
           optsG.appendChild(rect); optsG.appendChild(t);
           btns[i] = rect; lbls[i] = t;
@@ -107,12 +106,10 @@
       function choose(i) {
         if (answered) return; answered = true;
         var r = rounds[idx];
-        queryT.textContent = r.q.replace('___', r.o[i]);
         if (i === r.a) {
-          score++; btns[i].setAttribute('stroke', '#3FCF8E'); lbls[i].setAttribute('fill', '#3FCF8E'); queryT.setAttribute('fill', '#3FCF8E');
+          score++; btns[i].setAttribute('stroke', '#3FCF8E'); lbls[i].setAttribute('fill', '#3FCF8E');
         } else {
-          btns[i].setAttribute('stroke', '#c0431e'); lbls[i].setAttribute('fill', '#c0431e'); queryT.setAttribute('fill', '#c0431e');
-          btns[r.a].setAttribute('stroke', '#3FCF8E');
+          btns[i].setAttribute('stroke', '#c0431e'); lbls[i].setAttribute('fill', '#c0431e'); btns[r.a].setAttribute('stroke', '#3FCF8E');
         }
         statusT.textContent = 'Round ' + (idx + 1) + ' / ' + rounds.length + ' · score ' + score + ' · Best ' + Math.max(bestOf(), best);
         setTimeout(function () {
@@ -131,7 +128,7 @@
       }
 
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'r' || e.key === 'R') { idx = 0; score = 0; dailyFired = false; showCTA(false); render(); return; }
+        if (e.key === 'r' || e.key === 'R') { idx = 0; score = 0; dailyFired = false; showCTA(false); buildRounds(); render(); return; }
         if (answered) return;
         var n = parseInt(e.key, 10);
         if (n >= 1 && n <= 4) choose(n - 1);
@@ -140,6 +137,7 @@
       wireCTA();
       best = bestOf();
       ph('game_started', { game: GAME });
+      buildRounds();
       render();
     })();
   ]]></script>
