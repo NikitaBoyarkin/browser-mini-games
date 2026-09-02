@@ -1,0 +1,22 @@
+{
+  "name": "browser-mini-games",
+  "type": "module",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Playable browser mini-games — analytics concepts + arcade fun. Astro hub + self-contained SVG games.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^7.2.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
+  }
+}

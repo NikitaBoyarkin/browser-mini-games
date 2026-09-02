@@ -1,34 +1,61 @@
 # 🕹️ Browser Mini-Games
 
-Playable browser mini-games — some about analytics, some just for fun. Each game is a **self-contained SVG** (HTML + CSS + JS embedded, zero dependencies, no build step). Works on phone (swipe / drag / tap) and desktop (keyboard / mouse).
+Playable browser mini-games — some about analytics, some just for fun. The arcade **hub is built with Astro**; each game is a **self-contained SVG** (HTML + CSS + JS embedded, zero dependencies, no build step). Works on phone (swipe / drag / tap) and desktop (keyboard / mouse).
 
 ## 🎮 Games
 
+Self-contained games live in [`public/`](public/) (SVG files are copied as-is, one file = the whole game). The hub is `src/pages/index.astro`.
+
 | Game | File | How to play | Goal |
 |------|------|-------------|------|
-| 🐍 Snake | [`snake.svg`](snake.svg) | Swipe / arrows | Eat, grow, don't crash |
-| 🏓 Pong | [`pong.svg`](pong.svg) | Drag / W·S | Beat the CPU — first to 11 |
-| 🔢 2048 | [`2048.svg`](2048.svg) | Swipe / arrows | Merge tiles to reach 2048 |
-| 🧪 A/B Test | [`ab-test.svg`](ab-test.svg) | Tap / click | Collect data until p < 0.05 |
-| 🔻 Funnel Drop | [`funnel-drop.svg`](funnel-drop.svg) | Drag / ←·→ | Catch falling users to convert |
-| 📊 Cohort Catch | [`cohort-catch.svg`](cohort-catch.svg) | Drag / ←·→ | Catch Returning users, dodge Churned |
-| 🧩 SQL Query | [`sql-query.svg`](sql-query.svg) | Tap / click | Pick the token that completes the SQL |
-| 🃏 Metric Match | [`metric-match.svg`](metric-match.svg) | Tap / click | Match metric pairs in fewest moves |
+| 🐍 Snake | [`snake.svg`](public/snake.svg) | Swipe / arrows | Eat, grow, don't crash |
+| 🏓 Pong | [`pong.svg`](public/pong.svg) | Drag / W·S | Beat the CPU — first to 11 |
+| 🔢 2048 | [`2048.svg`](public/2048.svg) | Swipe / arrows | Merge tiles to reach 2048 |
+| 🧪 A/B Test | [`ab-test.svg`](public/ab-test.svg) | Tap / click | Collect data until p < 0.05 |
+| 🔻 Funnel Drop | [`funnel-drop.svg`](public/funnel-drop.svg) | Drag / ←·→ | Catch falling users to convert |
+| 📊 Cohort Catch | [`cohort-catch.svg`](public/cohort-catch.svg) | Drag / ←·→ | Catch Returning users, dodge Churned |
+| 🧩 SQL Query | [`sql-query.svg`](public/sql-query.svg) | Tap / click | Pick the token that completes the SQL |
+| 🃏 Metric Match | [`metric-match.svg`](public/metric-match.svg) | Tap / click | Match metric pairs in fewest moves |
 
 ## ▶️ How to run
 
-Open the [arcade hub](index.html) in any browser, or open any `.svg` directly — no server, no dependencies.
-
 ```bash
-open index.html        # macOS
-xdg-open index.html    # Linux
+npm install          # first time
+npm run dev          # dev server (astro dev)
+npm run build        # production build -> dist/
+npm run preview      # preview the built site
 ```
+
+You can also open any `.svg` directly in a browser — no server, no dependencies.
 
 ## 📦 Stack
 
-- Pure SVG + embedded vanilla JS — each file is the whole game
-- Shared arcade hub (`index.html`) with dark / light / cyberpunk themes
-- No frameworks, no bundlers, no external requests (except optional PostHog analytics)
+- **Hub:** Astro v7, static output, deployed to GitHub Pages (`base: /browser-mini-games`)
+- **Games:** pure SVG + embedded vanilla JS — each file is the whole game
+- **Themes:** dark / light / cyberpunk via `data-theme` + `localStorage`
+- The built `dist/` is fully self-contained (inline CSS/JS) — the hub works from any subpath, including the portfolio copy at `/games/`
+
+## 🔄 Deploy & portfolio sync
+
+**GitHub Pages:** `.github/workflows/deploy.yml` runs `npm ci && npm run build` and deploys `dist/` on push to `main`.
+
+**Portfolio copy:** `Personal_Projects.github.io/public/games/` is a synced copy.
+
+```bash
+npm run build
+python3 sync_games.py --dry-run   # preview what would change
+python3 sync_games.py             # copy drift from dist/ -> ../Personal_Projects.github.io/public/games/
+python3 sync_games.py --check     # CI-style check, exit 1 on drift
+```
+
+## 🧪 Tests
+
+[`tests/test_games_smoke.py`](tests/test_games_smoke.py) loads each game from `public/` via Playwright (pytest). Requires `pytest` + `playwright`:
+
+```bash
+pip install pytest playwright && playwright install chromium
+python3 -m pytest tests/ -v
+```
 
 ## 📈 Retention & Contact design
 
@@ -44,19 +71,9 @@ Goal: bring users back daily and turn engagement into a contact request.
 
 **Events sent** (via PostHog): `game_started`, `game_over`, `game_win`, `sig_reached`, `milestone`, `best_broken`, `daily_completed`, `contact_click`, `game_selected`.
 
-## 🔑 PostHog key (required for analytics)
+## 🔑 PostHog key
 
-Analytics are off until you insert your **client-side** PostHog key (a public `phc_…` token — it ships in the browser, so it is not a secret).
-
-Replace the placeholder `__PH_KEY__` in `index.html` and every `.svg`:
-
-```bash
-# one-shot across all files (key from your .env, value never printed)
-KEY=$(grep '^PUBLIC_POSTHOG_KEY=' ../<path-to-portfolio>/.env | cut -d= -f2 | tr -d '"' )
-sed -i '' "s/__PH_KEY__/$KEY/g" index.html *.svg
-```
-
-Without the key the games work fully — retention + contacts included; only analytics are skipped.
+A public client-side `phc_…` token ships in the browser (not a secret). It is hardcoded in `src/components/PostHogInit.astro` and inside each SVG. The `IS_LOCAL` guard skips tracking on localhost; local-only development can also test via `lvh.me` (the Playwright suite does).
 
 ## 📜 License
 

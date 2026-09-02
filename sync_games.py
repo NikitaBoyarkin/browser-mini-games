@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Sync browser-mini-games -> Personal_Projects.github.io/public/games.
+"""Sync browser-mini-games build output -> Personal_Projects.github.io/public/games.
 
-Canonical source: browser-mini-games/ (deployed via its own GitHub Pages workflow).
-Target: Personal_Projects.github.io/public/games/ (portfolio site copy).
+Canonical source: browser-mini-games/dist/ (Astro build output; run `npm run
+build` first). Target: Personal_Projects.github.io/public/games/ (portfolio
+site copy). The built hub is self-contained (inline CSS/JS), so it works from
+any subpath.
 
 Usage:
   python3 sync_games.py            # copy changed files
@@ -16,6 +18,7 @@ import pathlib
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
+SRC = ROOT / "dist"  # Astro build output
 DST = ROOT.parent / "Personal_Projects.github.io" / "public" / "games"
 
 FILES = [
@@ -41,13 +44,17 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="show what would be copied")
     args = ap.parse_args()
 
+    if not SRC.is_dir():
+        print(f"ERROR: source build missing: {SRC}")
+        print("  Run `npm run build` first.")
+        return 2
     if not DST.is_dir():
         print(f"ERROR: target dir missing: {DST}")
         return 2
 
     drift = []
     for f in FILES:
-        src = ROOT / f
+        src = SRC / f
         dst = DST / f
         if not src.is_file():
             print(f"WARN: source missing: {src}")
@@ -66,7 +73,7 @@ def main() -> int:
         return 1
 
     for f in drift:
-        src, dst = ROOT / f, DST / f
+        src, dst = SRC / f, DST / f
         if args.dry_run:
             print(f"would copy: {f}")
         else:

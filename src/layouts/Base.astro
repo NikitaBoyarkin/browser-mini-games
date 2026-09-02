@@ -1,0 +1,64 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Arcade — Nikita Boyarkin",
+  description =
+    "Playable browser mini-games about analytics and classic arcade fun. Works on phone (swipe / drag / tap) and desktop.",
+} = Astro.props;
+
+import "../styles/global.css";
+
+// theme-color per theme; kept in sync with the anti-flash script below.
+const THEME_COLORS: Record<string, string> = {
+  dark: "#0f2a2b",
+  light: "#f4efca",
+  cyberpunk: "#0a0a12",
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta id="theme-color" name="theme-color" content={THEME_COLORS.dark} />
+    <script is:inline>
+      // Prevent theme flash: apply saved (or system) theme before first paint.
+      // Shares the 'theme' key with the main portfolio so both stay in sync.
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem("theme");
+        } catch (e) {}
+        var THEME_COLORS = {
+          dark: "#0f2a2b",
+          light: "#f4efca",
+          cyberpunk: "#0a0a12",
+        };
+        var prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        var theme = prefersDark ? "dark" : "light";
+        if (saved === "dark" || saved === "light" || saved === "cyberpunk")
+          theme = saved;
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta)
+          meta.setAttribute(
+            "content",
+            THEME_COLORS[theme] || THEME_COLORS.dark,
+          );
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

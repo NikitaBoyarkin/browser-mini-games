@@ -1,0 +1,67 @@
+---
+// Hub contact section. data-channel feeds the PostHog contact_click event.
+---
+
+<section class="contact">
+  <h2>Want analytics or games like this for your product?</h2>
+  <p>
+    I build product analytics, experiments, dashboards — and playful ways to
+    present them.
+  </p>
+  <div class="row">
+    <a
+      href="https://www.linkedin.com/in/nikita-boyarkin"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-channel="linkedin"
+      >LinkedIn</a
+    >
+    <a
+      href="https://t.me/lofinibo"
+      target="_blank"
+      rel="noopener noreferrer"
+      data-channel="telegram"
+      >Telegram</a
+    >
+  </div>
+</section>
+
+<style>
+  .contact {
+    max-width: 1080px;
+    margin: 22px auto 0;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+  .contact h2 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
+  .contact p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .contact .row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .contact .row a {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    background: var(--accent);
+    padding: 8px 20px;
+    border-radius: 8px;
+  }
+  .contact .row a:hover {
+    background: var(--accent2);
+  }
+</style>

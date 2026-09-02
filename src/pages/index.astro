@@ -1,0 +1,227 @@
+---
+import Base from "../layouts/Base.astro";
+import PostHogInit from "../components/PostHogInit.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import GameCard from "../components/GameCard.astro";
+import DailyStrip from "../components/DailyStrip.astro";
+import ContactCTA from "../components/ContactCTA.astro";
+import Footer from "../components/Footer.astro";
+
+const GAMES = [
+  {
+    href: "snake.svg",
+    label: "Play Snake",
+    title: "Snake",
+    emoji: "🐍",
+    gameKey: "snake",
+    ctrl: "Swipe / arrows",
+    goal: "Eat, grow, don’t crash",
+  },
+  {
+    href: "ab-test.svg",
+    label: "Play A/B Test",
+    title: "A/B Test",
+    emoji: "🧪",
+    gameKey: "abtest",
+    ctrl: "Tap / click",
+    goal: "Collect data until p < 0.05",
+  },
+  {
+    href: "pong.svg",
+    label: "Play Pong",
+    title: "Pong",
+    emoji: "🏓",
+    gameKey: "pong",
+    ctrl: "Drag / W·S",
+    goal: "Beat the CPU — first to 11",
+  },
+  {
+    href: "2048.svg",
+    label: "Play 2048",
+    title: "2048",
+    emoji: "🔢",
+    gameKey: "2048",
+    ctrl: "Swipe / arrows",
+    goal: "Merge tiles to reach 2048",
+  },
+  {
+    href: "funnel-drop.svg",
+    label: "Play Funnel Drop",
+    title: "Funnel Drop",
+    emoji: "🔻",
+    gameKey: "funnel",
+    ctrl: "Drag / ←·→",
+    goal: "Catch falling users to convert",
+  },
+  {
+    href: "cohort-catch.svg",
+    label: "Play Cohort Catch",
+    title: "Cohort Catch",
+    emoji: "📊",
+    gameKey: "cohort",
+    ctrl: "Drag / ←·→",
+    goal: "Catch returning users, avoid churned",
+  },
+  {
+    href: "sql-query.svg",
+    label: "Play SQL Query",
+    title: "SQL Query",
+    emoji: "🧩",
+    gameKey: "sql",
+    ctrl: "Click / keys 1-4",
+    goal: "Fill the SQL blank",
+  },
+  {
+    href: "metric-match.svg",
+    label: "Play Metric Match",
+    title: "Metric Match",
+    emoji: "🃏",
+    gameKey: "metric",
+    ctrl: "Click two cards",
+    goal: "Match metric to formula",
+  },
+];
+---
+
+<Base>
+  <PostHogInit />
+  <header>
+    <a
+      class="home"
+      href="https://nikitaboyarkin.github.io/Personal_Projects.github.io/"
+      aria-label="Back to portfolio"
+      >← Portfolio</a
+    >
+    <ThemeToggle />
+    <h1><span class="t">⌘</span> Arcade</h1>
+    <p class="lede">
+      Tiny browser mini-games — some about analytics, some just for fun. Play
+      inline, on phone (swipe / drag / tap) or desktop (keyboard / mouse).
+    </p>
+  </header>
+  <DailyStrip />
+  <main class="grid">
+    {GAMES.map((g) => <GameCard {...g} />)}
+  </main>
+  <ContactCTA />
+  <Footer />
+  <script is:inline>
+    // Hub retention state: best-score badges + daily challenge strip.
+    (function () {
+      var GAMES = [
+        { key: "snake", label: "🐍 Snake", target: "200 pts" },
+        { key: "2048", label: "🔢 2048", target: "tile 512+" },
+        { key: "pong", label: "🏓 Pong", target: "win" },
+        { key: "abtest", label: "🧪 A/B Test", target: "sig ≤ 12 taps" },
+        { key: "funnel", label: "🔻 Funnel Drop", target: "25 caught" },
+        { key: "cohort", label: "📊 Cohort Catch", target: "25 kept" },
+        { key: "sql", label: "🧩 SQL Query", target: "perfect round (6/6)" },
+        { key: "metric", label: "🃏 Metric Match", target: "solve the board" },
+      ];
+
+      function lsGet(k, d) {
+        try {
+          var v = localStorage.getItem(k);
+          return v === null ? d : v;
+        } catch (e) {
+          return d;
+        }
+      }
+      function today() {
+        var n = new Date();
+        return (
+          n.getFullYear() +
+          "-" +
+          ("0" + (n.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + n.getDate()).slice(-2)
+        );
+      }
+      function todayGame() {
+        return GAMES[Math.floor(Date.now() / 86400000) % GAMES.length];
+      }
+
+      // Best score badges on cards.
+      document.querySelectorAll(".best").forEach(function (el) {
+        var g = el.getAttribute("data-game");
+        var b = parseInt(lsGet("arcade_best_" + g, "0"), 10) || 0;
+        if (b > 0) el.textContent = "Best: " + b;
+      });
+
+      // Daily challenge strip.
+      var d = todayGame();
+      var done =
+        lsGet("arcade_daily_date", "") === today() &&
+        lsGet("arcade_daily_done", "0") === "1";
+      var streak = parseInt(lsGet("arcade_streak", "0"), 10) || 0;
+      var tag = document.getElementById("daily-tag");
+      var txt = document.getElementById("daily-text");
+      var st = document.getElementById("daily-status");
+      if (tag && txt && st) {
+        txt.textContent = d.label + " — " + d.target;
+        if (done) {
+          tag.textContent = "✅ Done";
+          st.textContent =
+            streak > 1 ? "🔥 " + streak + "-day streak" : "🔥 streak started";
+        } else {
+          st.innerHTML = '<a href="' + d.key + '.svg">Play →</a>';
+        }
+      }
+    })();
+  </script>
+</Base>
+
+<style>
+  header {
+    position: relative;
+    padding: 40px 20px 8px;
+    text-align: center;
+  }
+  .home {
+    display: inline-block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .home:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 6vw, 44px);
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+  h1 .t {
+    color: var(--accent);
+  }
+  .lede {
+    max-width: 620px;
+    margin: 14px auto 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  main.grid {
+    max-width: 1080px;
+    margin: 28px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+    width: 100%;
+  }
+  @media (max-width: 520px) {
+    header {
+      padding: 28px 16px 6px;
+    }
+    main.grid {
+      padding: 0 16px;
+      gap: 14px;
+    }
+  }
+</style>

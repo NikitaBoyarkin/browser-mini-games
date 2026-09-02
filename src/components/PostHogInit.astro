@@ -1,0 +1,57 @@
+---
+// Hub-page analytics: inline CDN PostHog loader, mirroring the SVG games.
+// The public client-side token is baked in (not a secret); set the
+// PUBLIC_POSTHOG_KEY env at build time to override it via CI secrets or
+// a local .env. Never instruments local development.
+---
+
+<script is:inline>
+  // PostHog + hub event tracking (game selection, contact clicks).
+  (function () {
+    var IS_LOCAL = /^(localhost|127\.0\.0\.1|::1|0\.0\.0\.0)$/.test(
+      window.location.hostname,
+    );
+    var PH_KEY = "phc_tdju2w288PnkFE2e96efWKpoCvBPHPtveSztZK9NnGrv";
+    var PH_HOST = "https://us.i.posthog.com";
+    if (!IS_LOCAL && PH_KEY.indexOf("__PH_") !== 0 && !window.posthog) {
+      var s = document.createElement("script");
+      s.src = "https://us-assets.i.posthog.com/static/array.js";
+      s.async = true;
+      s.onload = function () {
+        try {
+          window.posthog.init(PH_KEY, {
+            api_host: PH_HOST,
+            capture_pageview: true,
+            capture_pageleave: true,
+            autocapture: true,
+          });
+        } catch (e) {}
+      };
+      document.head.appendChild(s);
+    }
+    function ph(name, props) {
+      try {
+        if (window.posthog && window.posthog.capture)
+          window.posthog.capture(name, props || {});
+      } catch (e) {}
+    }
+
+    // Contact clicks + game selection → structured events.
+    document.querySelectorAll(".contact a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        ph("contact_click", {
+          location: "hub",
+          channel: a.getAttribute("data-channel"),
+        });
+      });
+    });
+    document.querySelectorAll(".card").forEach(function (c) {
+      c.addEventListener("click", function () {
+        ph("game_selected", {
+          game: c.getAttribute("href").replace(".svg", ""),
+          from_hub: true,
+        });
+      });
+    });
+  })();
+</script>

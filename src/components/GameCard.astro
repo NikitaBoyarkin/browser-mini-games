@@ -1,0 +1,116 @@
+---
+interface Props {
+  href: string; // relative .svg path, also the preview image
+  label: string; // aria-label, e.g. "Play Snake"
+  title: string; // card title without emoji
+  emoji: string; // card emoji prefix
+  gameKey: string; // localStorage best-score key suffix
+  ctrl: string; // controls hint
+  goal: string; // goal hint
+}
+
+const { href, label, title, emoji, gameKey, ctrl, goal } = Astro.props;
+---
+
+<a class="card" href={href} aria-label={label}>
+  <div class="thumb">
+    <img
+      src={href}
+      alt={`${title} preview`}
+      loading="eager"
+      width="400"
+      height="440"
+      decoding="async"
+    />
+  </div>
+  <div class="card-body">
+    <h2>{emoji} {title}</h2>
+    <span class="best" data-game={gameKey}></span>
+    <p class="ctrl">{ctrl}</p>
+    <p class="goal">{goal}</p>
+    <span class="play">Play →</span>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    color: var(--text);
+    transition:
+      transform 0.15s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .thumb {
+    background: var(--surface2);
+    aspect-ratio: 400/440;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .card-body {
+    padding: 14px 16px 18px;
+  }
+  .card h2 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+  }
+  .ctrl {
+    margin: 0 0 2px;
+    color: var(--accent2);
+    font-size: 12px;
+  }
+  .goal {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .play {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    background: var(--accent);
+    padding: 7px 14px;
+    border-radius: 8px;
+  }
+  .card:hover .play {
+    background: var(--accent2);
+  }
+  .best {
+    display: inline-block;
+    margin: 0 0 8px;
+    font-size: 11px;
+    color: var(--accent2);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .best:empty {
+    display: none;
+  }
+</style>

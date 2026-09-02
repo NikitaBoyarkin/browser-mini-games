@@ -1,0 +1,47 @@
+---
+// Daily challenge strip. Text + streak status are filled in by the
+// page-level retention script (index.astro).
+---
+
+<section class="daily" id="daily" aria-label="Daily challenge">
+  <span class="tag" id="daily-tag">Daily</span>
+  <span class="goal" id="daily-text"></span>
+  <span id="daily-status"></span>
+</section>
+
+<style>
+  .daily {
+    max-width: 1080px;
+    margin: 18px auto 0;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+  }
+  .daily .tag {
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+  .daily .goal {
+    color: var(--muted);
+    font-size: 12px;
+    flex: 1;
+    min-width: 200px;
+  }
+  .daily a {
+    font-weight: 700;
+  }
+  @media (max-width: 520px) {
+    .daily {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>

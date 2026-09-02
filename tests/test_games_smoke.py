@@ -1,9 +1,10 @@
 """Smoke tests for the browser-mini-games arcade.
 
-Loads each game via a local HTTP server on lvh.me (resolves to 127.0.0.1 but is
-NOT in the IS_LOCAL regex), exercising the same non-localhost PostHog path that
-runs on GitHub Pages. Asserts the game element renders, no page errors, PostHog
-initializes, and the game responds to input.
+Loads each self-contained SVG game from public/ via a local HTTP server on
+lvh.me (resolves to 127.0.0.1 but is NOT in the IS_LOCAL regex), exercising the
+same non-localhost PostHog path that runs on GitHub Pages. Asserts the game
+element renders, no page errors, PostHog initializes, and the game responds to
+input.
 
 Requires: pytest, playwright
   pip install pytest playwright && playwright install chromium
@@ -18,7 +19,7 @@ import threading
 import pytest
 from playwright.sync_api import sync_playwright
 
-GAMES_DIR = pathlib.Path(__file__).resolve().parent.parent
+GAMES_DIR = pathlib.Path(__file__).resolve().parent.parent / "public"
 
 GAMES = [
     ("snake", "snake.svg", "score"),
