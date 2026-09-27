@@ -50,7 +50,9 @@
         var t = todayStr();
         var y = new Date(); y.setDate(y.getDate() - 1);
         var yst = y.getFullYear() + '-' + ('0' + (y.getMonth() + 1)).slice(-2) + '-' + ('0' + y.getDate()).slice(-2);
-        var streak = lsGet('arcade_daily_date', '') === yst ? (parseInt(lsGet('arcade_streak', '0'), 10) || 0) + 1 : 1;
+        var prev = lsGet('arcade_daily_date', '');
+        var cur = parseInt(lsGet('arcade_streak', '0'), 10) || 0;
+        var streak = prev === t ? (cur || 1) : (prev === yst ? cur + 1 : 1);
         lsSet('arcade_daily_date', t); lsSet('arcade_daily_done', '1'); lsSet('arcade_streak', String(streak));
         ph('daily_completed', { game: GAME, streak: streak });
       }
@@ -103,7 +105,7 @@
         var total = kept + lost, ret = total ? Math.round(kept / total * 100) : 0;
         statusT.textContent = 'Retention ' + ret + '% · kept ' + kept + ' · lost ' + lost + ' · Best ' + Math.max(bestOf(), best);
         if (newBest || (kept >= DAILY_TARGET && !dailyFired)) {
-          if (kept >= DAILY_TARGET && !dailyFired) { dailyFired = true; markDaily(); }
+          if (todayGame() === GAME && kept >= DAILY_TARGET && !dailyFired) { dailyFired = true; markDaily(); }
           showCTA(true);
           ph('milestone', { game: GAME, kept: kept, best: Math.max(bestOf(), best), daily_done: kept >= DAILY_TARGET });
         }

@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "test:contract": "python3 -m pytest tests/test_games_contract.py -q"
   },
   "dependencies": {
     "astro": "^7.2.9"

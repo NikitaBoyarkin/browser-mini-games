@@ -15,7 +15,36 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Astro diagnostics
+        run: npm run check
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pytest
+        run: python -m pip install --upgrade pytest
+      - name: Contract tests (static ratchet over the shared game patterns)
+        run: python -m pytest tests/test_games_contract.py -q
+      # Deliberately NOT run in CI:
+      #   * tests/test_games_smoke.py — needs Playwright browsers (~100 MB) and
+      #     serves public/ over lvh.me. Run it locally before a release.
+      #   * sync_games.py --check — drift check against the sibling
+      #     Personal_Projects.github.io checkout, which is absent here.
+
   deploy:
+    needs: verify
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

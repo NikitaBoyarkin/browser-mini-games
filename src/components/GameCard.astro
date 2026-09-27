@@ -12,7 +12,7 @@ interface Props {
 const { href, label, title, emoji, gameKey, ctrl, goal } = Astro.props;
 ---
 
-<a class="card" href={href} aria-label={label}>
+<a class="card" href={href} data-game={gameKey} aria-label={label}>
   <div class="thumb">
     <img
       src={href}

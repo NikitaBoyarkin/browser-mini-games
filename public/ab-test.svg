@@ -64,7 +64,9 @@
         var t = todayStr();
         var y = new Date(); y.setDate(y.getDate() - 1);
         var yst = y.getFullYear() + '-' + ('0' + (y.getMonth() + 1)).slice(-2) + '-' + ('0' + y.getDate()).slice(-2);
-        var streak = lsGet('arcade_daily_date', '') === yst ? (parseInt(lsGet('arcade_streak', '0'), 10) || 0) + 1 : 1;
+        var prev = lsGet('arcade_daily_date', '');
+        var cur = parseInt(lsGet('arcade_streak', '0'), 10) || 0;
+        var streak = prev === t ? (cur || 1) : (prev === yst ? cur + 1 : 1);
         lsSet('arcade_daily_date', t); lsSet('arcade_daily_done', '1'); lsSet('arcade_streak', String(streak));
         ph('daily_completed', { game: GAME, streak: streak });
       }
@@ -135,7 +137,7 @@
 
       function collect() {
         if (state.sig) { reset(); return; }
-        if (!started) { started = true; ph('experiment_started', { game: GAME }); }
+        if (!started) { started = true; ph('game_started', { game: GAME }); ph('experiment_started', { game: GAME }); }
         for (var i = 0; i < 150; i++) { if (Math.random() < 0.34) state.xA++; }
         for (var j = 0; j < 150; j++) { if (Math.random() < 0.30) state.xB++; }
         state.nA += 150; state.nB += 150;

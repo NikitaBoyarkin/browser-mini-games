@@ -52,7 +52,9 @@
         var t = todayStr();
         var y = new Date(); y.setDate(y.getDate() - 1);
         var yst = y.getFullYear() + '-' + ('0' + (y.getMonth() + 1)).slice(-2) + '-' + ('0' + y.getDate()).slice(-2);
-        var streak = lsGet('arcade_daily_date', '') === yst ? (parseInt(lsGet('arcade_streak', '0'), 10) || 0) + 1 : 1;
+        var prev = lsGet('arcade_daily_date', '');
+        var cur = parseInt(lsGet('arcade_streak', '0'), 10) || 0;
+        var streak = prev === t ? (cur || 1) : (prev === yst ? cur + 1 : 1);
         lsSet('arcade_daily_date', t); lsSet('arcade_daily_done', '1'); lsSet('arcade_streak', String(streak));
         ph('daily_completed', { game: GAME, streak: streak });
       }
@@ -94,9 +96,13 @@
       }
 
       function placeFood() {
-        do {
-          food = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)};
-        } while (snake.some(function (s) { return s.x === food.x && s.y === food.y; }));
+        var free = [], occupied = {};
+        for (var i = 0; i < snake.length; i++) occupied[snake[i].x + ',' + snake[i].y] = true;
+        for (var x = 0; x < COLS; x++) for (var y = 0; y < ROWS; y++) {
+          if (!occupied[x + ',' + y]) free.push({x: x, y: y});
+        }
+        if (!free.length) { endGame(); return; }
+        food = free[Math.floor(Math.random() * free.length)];
       }
 
       function draw() {

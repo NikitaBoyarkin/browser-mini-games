@@ -54,7 +54,9 @@
         var t = todayStr();
         var y = new Date(); y.setDate(y.getDate() - 1);
         var yst = y.getFullYear() + '-' + ('0' + (y.getMonth() + 1)).slice(-2) + '-' + ('0' + y.getDate()).slice(-2);
-        var streak = lsGet('arcade_daily_date', '') === yst ? (parseInt(lsGet('arcade_streak', '0'), 10) || 0) + 1 : 1;
+        var prev = lsGet('arcade_daily_date', '');
+        var cur = parseInt(lsGet('arcade_streak', '0'), 10) || 0;
+        var streak = prev === t ? (cur || 1) : (prev === yst ? cur + 1 : 1);
         lsSet('arcade_daily_date', t); lsSet('arcade_daily_done', '1'); lsSet('arcade_streak', String(streak));
         ph('daily_completed', { game: GAME, streak: streak });
       }
@@ -135,17 +137,22 @@
 
       function checkEnd() {
         maxTile = 0;
+        var full = true;
         for (var i = 0; i < W; i++) for (var j = 0; j < W; j++) {
-          maxTile = Math.max(maxTile, grid[i][j]);
-          if (grid[i][j] === 2048 && !won) {
-            won = true;
-            overlay.textContent = '2048! You did it · tap to continue';
-            finish('win');
-          }
-          if (!grid[i][j]) return;
-          if (j + 1 < W && grid[i][j] === grid[i][j + 1]) return;
-          if (i + 1 < W && grid[i][j] === grid[i + 1][j]) return;
+          var v = grid[i][j];
+          if (v > maxTile) maxTile = v;
+          if (!v) { full = false; continue; }
+          if (j + 1 < W && v === grid[i][j + 1]) full = false;
+          if (i + 1 < W && v === grid[i + 1][j]) full = false;
         }
+        if (maxTile >= 2048 && !won) {
+          won = true;
+          overlay.textContent = '2048! You did it · keep going';
+          overlay.setAttribute('fill', '#4ade80');
+          finish('win');
+          return;
+        }
+        if (!full) return;
         over = true;
         finish('over');
         overlay.textContent = 'Game over · tap to restart';

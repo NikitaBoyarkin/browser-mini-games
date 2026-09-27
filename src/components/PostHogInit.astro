@@ -1,8 +1,7 @@
 ---
 // Hub-page analytics: inline CDN PostHog loader, mirroring the SVG games.
-// The public client-side token is baked in (not a secret); set the
-// PUBLIC_POSTHOG_KEY env at build time to override it via CI secrets or
-// a local .env. Never instruments local development.
+// The public client-side token is baked in — it is not a secret, and there is
+// no build-time env override. Never instruments local development.
 ---
 
 <script is:inline>
@@ -48,7 +47,9 @@
     document.querySelectorAll(".card").forEach(function (c) {
       c.addEventListener("click", function () {
         ph("game_selected", {
-          game: c.getAttribute("href").replace(".svg", ""),
+          game:
+            c.getAttribute("data-game") ||
+            c.getAttribute("href").replace(".svg", ""),
           from_hub: true,
         });
       });
