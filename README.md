@@ -1,5 +1,33 @@
 # 🕹️ Browser Mini-Games
 
+> **10** self-contained SVG mini-games — analytics-flavoured and just-for-fun — behind one Astro arcade hub, with zero dependencies and no build step per game.
+
+## Navigation
+- 🌐 [Portfolio site](https://nikitaboyarkin.github.io)
+- 🏦 [Flagship case: Volta neobank](https://github.com/NikitaBoyarkin/volta-banking)
+- 🧪 Related: [ab_test](https://github.com/NikitaBoyarkin/ab_test) · [causal-uplift](https://github.com/NikitaBoyarkin/causal-uplift) · [browser-mini-games](https://github.com/NikitaBoyarkin/browser-mini-games)
+
+**On this page:** [Situation](#situation) · [Task](#task) · [Actions](#actions) · [Result](#result) · [Games](#-games) · [How to run](#-how-to-run) · [Stack](#-stack) · [Tests](#-tests) · [License](#-license)
+
+## Situation
+Small, playable things are the fastest way to show that a browser artifact can be a whole experience — no framework, no build, no server — and, at the same time, to make analytics ideas (A/B tests, funnels, cohorts, retention, SQL) something people actually touch. The hard constraint is that each game has to stay a single file that opens anywhere.
+
+## Task
+Build a set of playable mini-games — some about analytics, some just for fun — as self-contained SVGs, and wrap them in a hub that deploys as a static site.
+
+## Actions
+- Write each game as one SVG file with embedded HTML/CSS/JS and no dependencies.
+- Build the arcade hub in Astro with dark/light/cyberpunk themes via `data-theme` and `localStorage`.
+- Support phone (swipe / drag / tap) and desktop (keyboard / mouse) input.
+- Add retention mechanics — best score, a daily challenge, and a streak.
+- Instrument client-side PostHog events behind an `IS_LOCAL` guard, and smoke-test every game with Playwright.
+
+## Result
+- **10** — self-contained games in `public/`, each a single SVG file.
+- **9** — PostHog events sent (`game_started`, `game_over`, `game_win`, `sig_reached`, `milestone`, `best_broken`, `daily_completed`, `contact_click`, `game_selected`).
+- **first to 11** — Pong's win condition.
+- **2048** — the merge target in the 2048 game.
+
 Playable browser mini-games — some about analytics, some just for fun. The arcade **hub is built with Astro**; each game is a **self-contained SVG** (HTML + CSS + JS embedded, zero dependencies, no build step). Works on phone (swipe / drag / tap) and desktop (keyboard / mouse).
 
 ## 🎮 Games
