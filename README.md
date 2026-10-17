@@ -7,6 +7,8 @@
 - 🏦 [Flagship case: Volta neobank](https://github.com/NikitaBoyarkin/volta-banking)
 - 🧪 Related: [ab_test](https://github.com/NikitaBoyarkin/ab_test) · [causal-uplift](https://github.com/NikitaBoyarkin/causal-uplift) · [browser-mini-games](https://github.com/NikitaBoyarkin/browser-mini-games)
 
+**▶ [Diagram: Browser Mini-Games — one arcade hub, ten build-free SVG games](docs/diagrams/browser-mini-games.html)** — opens in a browser, no install, no build
+
 **On this page:** [Situation](#situation) · [Task](#task) · [Actions](#actions) · [Result](#result) · [Games](#-games) · [How to run](#-how-to-run) · [Stack](#-stack) · [Tests](#-tests) · [License](#-license)
 
 ## Situation
